@@ -1,0 +1,42 @@
+{
+  "name": "fixedwidth-forge",
+  "displayName": "FixedWidth Forge: Logistics Data Parser",
+  "description": "Preview legacy fixed-width data (mainframe/ERP) as tables",
+  "version": "0.1.0",
+  "publisher": "TallowX92",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Data Science",
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "fwforge.preview",
+        "title": "FW Forge: Preview as Table"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "fwforge.preview",
+          "when": "resourceExtname == .txt || resourceExtname == .fwf"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "FixedWidth Forge",
+      "properties": {
+        "fwforge.cliPath": {
+          "type": "string",
+          "default": "fwforge",
+          "description": "Path to the fwforge CLI (or just 'fwforge' if in PATH)"
+        }
+      }
+    }
+  }
+}
