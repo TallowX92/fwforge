@@ -7,15 +7,28 @@ name = "fwforge"
 version = "0.1.0"
 description = "Fixed-width file parser for legacy logistics & supply chain data"
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.9"
+authors = [
+    {name = "TallowX92", email = "tallow072@gmail.com"}
+]
 dependencies = [
     "pyyaml>=6.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/TallowX92/fwforge"
+Repository = "https://github.com/TallowX92/fwforge"
+Issues = "https://github.com/TallowX92/fwforge/issues"
+
 [project.scripts]
 fwforge = "fwforge.cli:main"
 
-[tool.setuptools]
-packages = ["fwforge"]
-[tool.setuptools.package-dir]
-"" = "src"
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]

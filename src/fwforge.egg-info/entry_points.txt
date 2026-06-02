@@ -1,2 +1,0 @@
-[console_scripts]
-fwforge = fwforge.cli:main

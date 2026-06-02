@@ -5,24 +5,46 @@ import os
 from .fw_parser import FixedWidthParser
 from .writer import write_csv, write_json
 
-def process_file(input_path, output, layout, format_type):
-    column_names = [col['name'] for col in layout['columns']]
-    file_parser = FixedWidthParser(layout)
-    
-    records = []
-    with open(input_path, 'r', encoding='utf-8', errors='replace') as f:
-        for line in f:
-            line = line.rstrip('\n\r')
-            if line.strip():
-                records.append(file_parser.parse_line(line))
-    
+def infer_layout(filepath):
     try:
+        with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+            line = f.readline().rstrip('\n\r')
+        
+        columns = []
+        import re
+        for match in re.finditer(r'\S+', line):
+            columns.append({
+                "name": f"col_{match.start()}",
+                "start": match.start(),
+                "length": match.end() - match.start(),
+                "trim": True,
+                "type": "string"
+            })
+        return {"name": "InferredLayout", "columns": columns}
+    except FileNotFoundError:
+        print(f"Error: File '{filepath}' not found.", file=sys.stderr)
+        sys.exit(1)
+
+def process_file(input_path, output, layout, format_type):
+    try:
+        column_names = [col['name'] for col in layout['columns']]
+        file_parser = FixedWidthParser(layout)
+        
+        records = []
+        with open(input_path, 'r', encoding='utf-8', errors='replace') as f:
+            for line in f:
+                line = line.rstrip('\n\r')
+                if line.strip():
+                    records.append(file_parser.parse_line(line))
+        
         if format_type == "csv":
             write_csv(records, column_names, output)
         else:
             write_json(records, output)
+            
+    except Exception as e:
+        print(f"Error processing {input_path}: {e}", file=sys.stderr)
     finally:
-        # Only close if it's a file, not stdout
         if output is not sys.stdout:
             output.close()
 
@@ -36,9 +58,6 @@ def main():
     args = parser.parse_args()
 
     if args.infer:
-        # Import inside to avoid circular dependency if needed, 
-        # but here it's fine.
-        from .cli import infer_layout
         layout = infer_layout(args.input)
         print(yaml.dump(layout))
         return
@@ -46,11 +65,14 @@ def main():
     if not args.schema:
         parser.error("the following arguments are required: -s/--schema")
 
-    with open(args.schema, 'r') as f:
-        layout = yaml.safe_load(f)
+    try:
+        with open(args.schema, 'r') as f:
+            layout = yaml.safe_load(f)
+    except FileNotFoundError:
+        print(f"Error: Schema file '{args.schema}' not found.", file=sys.stderr)
+        sys.exit(1)
 
     if os.path.isdir(args.input):
-        # Batch mode
         output_dir = args.output or args.input
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -61,35 +83,21 @@ def main():
                 output_filename = os.path.splitext(filename)[0] + "." + args.format
                 output_path = os.path.join(output_dir, output_filename)
                 print(f"Processing {input_path} -> {output_path}")
-                with open(output_path, 'w', encoding='utf-8', newline='') as out_file:
-                    process_file(input_path, out_file, layout, args.format)
+                try:
+                    with open(output_path, 'w', encoding='utf-8', newline='') as out_file:
+                        process_file(input_path, out_file, layout, args.format)
+                except Exception as e:
+                    print(f"Error writing to {output_path}: {e}", file=sys.stderr)
     else:
-        # Single file mode
-        if args.output:
-            output = open(args.output, 'w', encoding='utf-8', newline='')
-        else:
-            output = sys.stdout
-        
-        process_file(args.input, output, layout, args.format)
-
-def infer_layout(filepath):
-    # Moved inside or keep here, let's keep it here for simplicity
-    with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
-        line = f.readline().rstrip('\n\r')
-    
-    columns = []
-    import re
-    # Simple heuristic: find contiguous non-space sequences as columns
-    for match in re.finditer(r'\S+', line):
-        columns.append({
-            "name": f"col_{match.start()}",
-            "start": match.start(),
-            "length": match.end() - match.start(),
-            "trim": True,
-            "type": "string"
-        })
-    
-    return {"name": "InferredLayout", "columns": columns}
+        try:
+            output = open(args.output, 'w', encoding='utf-8', newline='') if args.output else sys.stdout
+            process_file(args.input, output, layout, args.format)
+        except FileNotFoundError:
+             print(f"Error: Input file '{args.input}' not found.", file=sys.stderr)
+             sys.exit(1)
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
 
 if __name__ == "__main__":
     main()
