@@ -50,6 +50,12 @@ cat output.csv
 fwforge -i ./daily_manifests/ -s manifest.yaml -f json
 ```
 
+## VS Code Extension (Alpha)
+Preview legacy mainframe data as interactive tables directly in VS Code.
+- Located in: `vscode-extension/`
+- Supports context-menu "FW Forge: Preview as Table" for `.txt` and `.fwf` files.
+- Visualizes raw mainframe output using your custom YAML schemas.
+
 ## Example Schema (`layout.yaml`)
 ```yaml
 name: "Freight-Manifest-v1"
