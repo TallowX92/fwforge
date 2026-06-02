@@ -69,13 +69,12 @@ columns:
 ## Development
 
 ```bash
-# Clone and setup
 git clone https://github.com/TallowX92/fwforge.git
 cd fwforge
 uv sync
 uv run pytest -v
 
-# Run CLI
+# Run the CLI
 uv run fwforge --help
 ```
 
