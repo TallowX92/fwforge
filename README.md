@@ -1,0 +1,50 @@
+# FixedWidth Forge
+
+**Parse legacy fixed-width files from logistics, warehouses, ERP systems, and mainframes — instantly.**
+
+Turn messy carrier reports, shipment manifests, and COBOL exports into clean CSV or JSON with a simple YAML schema.
+
+## Features
+
+- Lightweight Python CLI
+- YAML-based column schema (supports `start+length` and `start+end`)
+- Batch processing for entire folders
+- `--infer` mode to generate starter schemas
+- Clean CSV + JSON output with type casting
+- Zero dependencies beyond PyYAML
+
+## Installation
+
+```bash
+# Install as a package
+pip install .
+```
+
+## Quick Start
+
+```bash
+# Basic usage
+fwforge -i data.txt -s layout.yaml -f csv -o output.csv
+
+# Infer a schema from a new file
+fwforge --infer -i data.txt > layout.yaml
+
+# Batch process a folder
+fwforge -i ./raw_files/ -s manifest.yaml -f json
+```
+
+## Example Schema (`layout.yaml`)
+```yaml
+name: "Freight-Manifest-v1"
+columns:
+  - name: "carrier_code"
+    start: 0
+    length: 5
+    trim: true
+    type: "string"
+  - name: "weight"
+    start: 20
+    length: 10
+    trim: true
+    type: "float"
+```

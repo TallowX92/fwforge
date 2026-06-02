@@ -1,0 +1,17 @@
+name: "Freight-Manifest-v1"
+columns:
+  - name: "carrier_code"
+    start: 0
+    length: 5
+    trim: true
+    type: "string"
+  - name: "tracking_num"
+    start: 5
+    length: 15
+    trim: true
+    type: "string"
+  - name: "weight"
+    start: 20
+    length: 10
+    trim: true
+    type: "float"
