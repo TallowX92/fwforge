@@ -1,9 +1,14 @@
 {
   "name": "fixedwidth-forge",
   "displayName": "FixedWidth Forge: Logistics Data Parser",
-  "description": "Preview legacy fixed-width data (mainframe/ERP) as tables",
-  "version": "0.1.0",
-  "publisher": "TallowX92",
+  "description": "Preview legacy fixed-width data (mainframe/ERP/EDI-850/AS/400/COBOL) as tables. Supports .txt .fwf and custom YAML schemas.",
+  "version": "0.1.1",
+  "publisher": "Devotall",
+  "icon": "images/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Devotall/fwforge.git"
+  },
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -11,7 +16,9 @@
     "Data Science",
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:fwforge.preview"
+  ],
   "main": "./extension.js",
   "contributes": {
     "commands": [
