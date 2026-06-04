@@ -27,26 +27,6 @@ function activate(context) {
             schemaPath = picked[0].fsPath;
         }
 
-        // Funnel: usage counter + Pro upsell for large files (>50MB)
-        try {
-            const stats = fs.statSync(filePath);
-            const sizeMB = stats.size / (1024 * 1024);
-            if (sizeMB > 50) {
-                const largeCount = context.globalState.get('fwforge.largeFilesProcessed', 0) + 1;
-                await context.globalState.update('fwforge.largeFilesProcessed', largeCount);
-                
-                const choice = await vscode.window.showInformationMessage(
-                    `Processing a large file (${sizeMB.toFixed(1)} MB). For high-speed multi-threaded parsing, error correction, and audit logs, upgrade to FW Forge Pro.`,
-                    'Learn about Pro', 'Dismiss'
-                );
-                if (choice === 'Learn about Pro') {
-                    vscode.env.openExternal(vscode.Uri.parse('https://tallowx92.github.io/fwforge-pro'));
-                }
-            }
-        } catch (e) {
-            // ignore stat errors
-        }
-
         const cliPath = vscode.workspace.getConfiguration('fwforge').get('cliPath', 'fwforge');
         
         execFile(cliPath, ['-i', filePath, '-s', schemaPath, '-f', 'json'], (err, stdout, stderr) => {
