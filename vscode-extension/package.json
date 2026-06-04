@@ -1,8 +1,8 @@
 {
-  "name": "fixedwidth-forge",
+  "name": "fixedwidth-forge-official",
   "displayName": "FixedWidth Forge: Logistics Data Parser",
-  "description": "Preview legacy fixed-width data (mainframe/ERP/EDI-850/AS/400/COBOL) as tables. Supports .txt .fwf and custom YAML schemas.",
-  "version": "0.1.1",
+  "description": "FixedWidth Forge (FW Forge) enables high-speed previewing and table-based exploration of legacy fixed-width and flat-file formats (COBOL, EDI, ERP/Mainframe exports) directly in VS Code. Simply define a YAML layout file to parse and visualize complex data structures without enterprise bloat.",
+  "version": "0.1.6",
   "publisher": "Devotall",
   "icon": "images/icon.png",
   "repository": {
@@ -14,7 +14,23 @@
   },
   "categories": [
     "Data Science",
+    "Programming Languages",
     "Other"
+  ],
+  "keywords": [
+    "fixed-width",
+    "mainframe",
+    "COBOL",
+    "EDI",
+    "AS/400",
+    "legacy",
+    "logistics",
+    "supply-chain",
+    "flat-file",
+    "data-parser",
+    "warehouse",
+    "ERP",
+    "manifest"
   ],
   "activationEvents": [
     "onCommand:fwforge.preview"
@@ -24,7 +40,7 @@
     "commands": [
       {
         "command": "fwforge.preview",
-        "title": "FW Forge: Preview as Table"
+        "title": "FixedWidth Forge: Preview as Table"
       }
     ],
     "menus": {
@@ -41,7 +57,7 @@
         "fwforge.cliPath": {
           "type": "string",
           "default": "fwforge",
-          "description": "Path to the fwforge CLI (or just 'fwforge' if in PATH)"
+          "description": "Path to the fwforge CLI executable. Default 'fwforge' assumes it's in PATH."
         }
       }
     }
